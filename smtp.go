@@ -12,18 +12,21 @@ import (
 	"strings"
 )
 
+// only one smtp account for now
 var (
 	Host string
-	Port int = 465
-	Name string
-	From string
+	Port int    = 465
+	Name string // sender name
+	From string // sender email
 	auth smtp.Auth
 )
 
+// Auth setup sender password
 func Auth(password string) {
 	auth = smtp.PlainAuth("", From, password, Host)
 }
 
+// SendMail send a email
 func SendMail(subject, body string, to ...string) (err error) {
 
 	header := make(map[string]string)
@@ -65,7 +68,7 @@ func dial(addr string) (*smtp.Client, error) {
 //使用net.Dial连接tls(ssl)端口时,smtp.NewClient()会卡住且不提示err
 //len(to)>1时,to[1]开始提示是密送
 func sendMailUsingTLS(addr string, auth smtp.Auth, from string,
-	to []string, msg []byte) (err error) {
+	to []string, msg []byte) error {
 
 	//create smtp client
 	c, err := dial(addr)
